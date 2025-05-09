@@ -53,8 +53,8 @@ export const ChatView = ({ message, setMessage, chatHistory, isLoading, handleCh
             disabled={isLoading || !message.trim()}
             className={`${components.button.icon} ${
               isLoading || !message.trim()
-                ? 'opacity-50'
-                : `${colors.text.muted} ${colors.primary.hover.light} ${colors.primary.hover.dark} hover:scale-110`
+                ? 'opacity-50 pointer-events-none'
+                : `${colors.text.muted} ${colors.primary.hover.light} ${colors.primary.hover.dark} hover:scale-110 cursor-pointer`
             } transition-all duration-200`}
             aria-label="Send message"
           >

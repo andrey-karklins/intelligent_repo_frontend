@@ -162,6 +162,12 @@ export const UploadView = ({
             placeholder="Add a description for your files..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey && !isUploading && files.length > 0) {
+                e.preventDefault();
+                handleUploadSubmit();
+              }
+            }}
             aria-label="File description"
           ></textarea>
 
@@ -173,8 +179,8 @@ export const UploadView = ({
               disabled={files.length === 0 || isUploading}
               className={`${components.button.icon} ${
                 files.length === 0 || isUploading
-                  ? 'opacity-50'
-                  : `${colors.text.muted} ${colors.primary.hover.light} ${colors.primary.hover.dark} hover:scale-110`
+                  ? 'opacity-50 pointer-events-none'
+                  : `${colors.text.muted} ${colors.primary.hover.light} ${colors.primary.hover.dark} hover:scale-110 cursor-pointer`
               } transition-all duration-200`}
               aria-label="Upload files"
             >
