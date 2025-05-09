@@ -1,5 +1,6 @@
 import { View } from '../lib/types';
 import { colors, components } from '../lib/theme';
+import { ChatBubbleLeftRightIcon, CloudArrowUpIcon } from '@heroicons/react/24/outline';
 
 /** Props for the navigation header */
 interface HeaderProps {
@@ -20,43 +21,23 @@ export const Header = ({ currentView, setCurrentView }: HeaderProps) => (
       
       {/* View switcher */}
       <div className={`flex rounded-2xl ${colors.background.card} backdrop-blur-sm p-1.5 w-64 shadow-inner mx-auto`}>
-        {['chat', 'upload'].map((view) => (
+        {[
+          { id: 'chat', Icon: ChatBubbleLeftRightIcon },
+          { id: 'upload', Icon: CloudArrowUpIcon }
+        ].map(({ id, Icon }) => (
           <button
-            key={view}
-            onClick={() => setCurrentView(view as View)}
+            key={id}
+            onClick={() => setCurrentView(id as View)}
             className={`${components.button.tab} ${
-              currentView === view
+              currentView === id
                 ? `bg-white dark:bg-sky-600 ${colors.primary.light} dark:text-white shadow-lg ring-1 ring-sky-100 dark:ring-sky-500/20`
                 : `${colors.text.muted} ${colors.primary.hover.light} ${colors.primary.hover.dark} hover:bg-white/50 dark:hover:bg-sky-600/20`
             }`}
-            aria-label={`Switch to ${view} view`}
-            aria-pressed={currentView === view}
+            aria-label={`Switch to ${id} view`}
+            aria-pressed={currentView === id}
           >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className="h-4 w-4 mr-2" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              {view === 'chat' ? (
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" 
-                />
-              ) : (
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" 
-                />
-              )}
-            </svg>
-            {view.charAt(0).toUpperCase() + view.slice(1)}
+            <Icon className="h-4 w-4 mr-2" aria-hidden="true" />
+            {id.charAt(0).toUpperCase() + id.slice(1)}
           </button>
         ))}
       </div>
