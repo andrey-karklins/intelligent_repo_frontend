@@ -6,7 +6,11 @@ export interface UploadStatus {
 }
 
 export interface UploadDocumentsResponse {
-  message?: string;
+  uploaded: {
+    filename: string;
+    url?: string;
+    error?: string;
+  }[];
 }
 
 /** Controller for document-related API endpoints */
@@ -29,14 +33,28 @@ export class DocumentsApi extends ApiController {
   public async uploadDocuments(files: File[], description?: string): Promise<UploadStatus> {
     try {
       const formData = new FormData();
-      formData.append('description', description || 'Description for these files');
-      files.forEach(file => formData.append('files', file));
       
-      const data = await this.uploadFiles<UploadDocumentsResponse>('/api/documents/upload', formData);
+      // Append each file individually to match FastAPI's List[UploadFile]
+      for (const file of files) {
+        // The field name must be 'files' to match the FastAPI parameter
+        // We must append each file separately with the same field name
+        formData.append('files', file);
+      }
+      
+      const data = await this.uploadFiles<UploadDocumentsResponse>('/upload', formData);
+      
+      // Check if any files had errors
+      const errors = data.uploaded.filter(result => result.error);
+      if (errors.length > 0) {
+        return {
+          success: false,
+          message: `Failed to upload some files: ${errors.map(e => `${e.filename} (${e.error})`).join(', ')}`
+        };
+      }
       
       return {
         success: true,
-        message: data.message || 'Files uploaded successfully!'
+        message: `Successfully uploaded ${data.uploaded.length} file(s)!`
       };
     } catch (error) {
       console.error('Upload error:', error);
